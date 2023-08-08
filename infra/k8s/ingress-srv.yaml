@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # telling nginx there are going to be regex in the bottom of the file
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  # from our local machine if we enter this address, it will go to ingress
+    - host: vintage.dev
+      http:
+        paths:
+        # when we give this path it will go to the corresponding backend
+          - path: /api/users/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-srv
+                port:
+                # This should be the same as port in the auth-srv, as port in auth serv- is where it is listening to request
+#               # when it gets the request, it will send it to the target port which is the pod
+                  number: 3000
+
+

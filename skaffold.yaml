@@ -1,0 +1,33 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+manifests:
+  rawYaml:
+    #to tell scaffold to watch all the different yaml files
+    # no need to use apply
+    # no need to remove object manually not files
+    # all teh files to watch
+    - ./infra/k8s/*
+build:
+  #local:
+    # whenever we build do not push it to docker hub
+    #push: false
+  googleCloudBuild:
+    projectId: vintage-galleria-dev
+    # all the things that are going to be build
+  artifacts:
+  # Need to do this for each of the images
+    #- image: ganavijayaram/auth
+    - image: us.gcr.io/vintage-galleria-dev/auth
+      # where the image will be present
+      context: auth
+      docker:
+        # Which dockerfile to use
+        dockerfile: Dockerfile
+        #How to handle any file which changes here 
+      sync: 
+        # what are the things which has ot be done manually by the skaffold
+        manual:
+        # skafoold needs to watch all the files in ts
+          - src: 'src/**/*.ts'
+        # where to sync in the conatiner
+            dest: .

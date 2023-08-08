@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  #how to find all the pods to create
+  selector:
+    matchLabels:
+      app: auth
+  # how to create the pods
+  template:
+    metadata:
+      labels:
+        app: auth
+    #how should the pods behace
+    spec:
+      containers:
+      - name: auth
+        #image: ganavijayaram/auth
+        image: us.gcr.io/vintage-galleria-dev/auth
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec: 
+  #How to select
+  selector:
+    # default type is ClusterIP
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+
