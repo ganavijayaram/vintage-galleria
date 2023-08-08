@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
       - name: auth
-        #image: ganavijayaram/auth
-        image: us.gcr.io/vintage-galleria-dev/auth
+        image: ganavijayaram/auth
+        #image: us.gcr.io/vintage-galleria-dev/auth
         
 ---
 apiVersion: v1
