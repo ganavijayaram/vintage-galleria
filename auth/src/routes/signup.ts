@@ -29,7 +29,7 @@ router.post('/api/users/signup',  [
 
   if(!errors.isEmpty()) {
     //sending the errors as an array
-    return res.status(400).send(errors.array())
+    throw new Error('Error in signup!')
   }
 
 
