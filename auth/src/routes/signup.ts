@@ -4,6 +4,10 @@ import express, {Request, Response} from "express";
 //using the  express validator to validate the imcoming requests
 import { body, validationResult } from "express-validator";
 
+//Custom error handlers
+import { RequestValidationError } from "../errors/request-validation-error";
+import { DatabaseConnectionError } from "../errors/database-connetion-error";
+
 const router = express.Router()
 /*
 router.post('/api/users/signup', (req, res) => {
@@ -29,11 +33,13 @@ router.post('/api/users/signup',  [
 
   if(!errors.isEmpty()) {
     //sending the errors as an array
-    throw new Error('Error in signup!')
+    throw new RequestValidationError(errors.array())
   }
 
 
   const {email, password} = req.body
+
+  throw new DatabaseConnectionError()
 
   console.log("current-user(/api/users/signup):Creating user")
   

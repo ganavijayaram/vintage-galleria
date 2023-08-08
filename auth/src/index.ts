@@ -15,6 +15,8 @@ app.use(currentUserRouter)
 app.use(signinRouter)
 app.use(signoutRouter)
 app.use(signupRouter)
+//this has to be in the end, if there are any errors in the above routes,
+// it will come down through the stack of middlewares and execute appropriately
 app.use(errorHandler)
 
 

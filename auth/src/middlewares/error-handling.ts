@@ -6,6 +6,6 @@ import { Request, Response, NextFunction } from "express"
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log("Error!")
   res.status(400).send({
-    "message": "Error in middleware"
+    "message": err.message
   })
 }
