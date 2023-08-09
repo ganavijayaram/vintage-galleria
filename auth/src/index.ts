@@ -3,6 +3,8 @@ import { json } from "body-parser";
 //if we have any async, and there is an error in that function, we need ot use next.
 //this next is express spcific, so in order to overcome this behaviour we have this module, which will let us use async without next
 import 'express-async-errors'
+// for our DB
+import mongoose from "mongoose";
 
 import { currentUserRouter } from "./routes/current-user";
 import { signinRouter } from "./routes/signin";
@@ -29,7 +31,21 @@ app.all('*', async () => {
 // it will come down through the stack of middlewares and execute appropriately
 app.use(errorHandler)
 
-//Listenig to port 
+// we are creating this fucntion asyn because, some versions of node require asynch function if you use await
+const start = async () => {
+  //await mongoose.connect('mongodb://localhost') --> if db was running on localmachine
+  try {
+    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth')
+  }
+ 
+  catch {
+    console.error('DB error')
+  }
+  //Listenig to port 
 app.listen(3000, () => {
   console.log('Listening on port 3000!!!')
 })
+}
+
+
+start()
