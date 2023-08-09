@@ -26,7 +26,7 @@ router.post('/api/users/signup',  [
     .isLength({min: 4, max: 20})
     .withMessage('Password must be betweeb 4 and 20 characters')
     //Typescript needs to know the tyoe of the arguments and return type of the function
-] , (req: Request, res: Response) => {
+] ,async (req: Request, res: Response) => {
 
   //before we procees, if there are any errors during the validation, we are going to get those errors
   const errors = validationResult(req)

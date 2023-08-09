@@ -1,5 +1,8 @@
 import  express  from "express";
 import { json } from "body-parser";
+//if we have any async, and there is an error in that function, we need ot use next.
+//this next is express spcific, so in order to overcome this behaviour we have this module, which will let us use async without next
+import 'express-async-errors'
 
 import { currentUserRouter } from "./routes/current-user";
 import { signinRouter } from "./routes/signin";
@@ -18,7 +21,7 @@ app.use(signoutRouter)
 app.use(signupRouter)
 
 //for all the routes which are not defines, we have defined custom not found error, which is then handled by the errorHandler
-app.all('*', () => {
+app.all('*', async () => {
   throw new NotFoundError()
 })
 
