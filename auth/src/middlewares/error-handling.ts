@@ -9,20 +9,16 @@ import { DatabaseConnectionError } from "../errors/database-connetion-error"
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if(err instanceof RequestValidationError) {
     console.log('Request Validation Error!!')
-    const formattedError = err.errors.map((error) => {
-      if(error.type === 'field')
-      return {message: error.msg, field: error.path}
-    })
-    return res.status(400).send({errors: formattedError})
+    return res.status(err.statusCode).send({errors: err.serializeErrors()})
   }
 
   else if(err instanceof DatabaseConnectionError) {
     console.log('Database Connection Error!!')
-    return res.status(500).send({errors: [{message: err.reason}]})
+    return res.status(err.statusCode).send({errors: err.serializeErrors()})
   }
   else {
     console.log('Unknown Type Error!!')
-    return res.status(400).send({errors: [{message: 'Unknown Type Error!!'}]})
+    return res.status(400).send({errors: 'Unknown Type Error!!'})
   }
   res.status(400).send({
     "message": err.message
