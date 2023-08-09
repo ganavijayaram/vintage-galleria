@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express"
-import { RequestValidationError } from "../errors/request-validation-error"
-import { DatabaseConnectionError } from "../errors/database-connetion-error"
 import { CustomError } from "../errors/custom-error"
+
 
 
 // our front end will be getting same error structure from all the different microservices.
