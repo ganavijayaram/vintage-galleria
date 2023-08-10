@@ -6,7 +6,7 @@ interface UserAttrs {
   password: string
 }
 
-//schema is a way to tell all the different properties users is going to have
+//schema is a way to tell all the different properties users is going to have while creating
 const userSchema = new mongoose.Schema({
   email: {
     type: String, //This is not TypeScript type, it is JS type
@@ -18,9 +18,20 @@ const userSchema = new mongoose.Schema({
   }
 })
 
+//email and password are additional properties to the properties 
+// added by the mongoose (mongoose.Document)
+//this is beasically the return type for the User
+interface UserDoc extends mongoose.Document {
+  email: string
+  password: string
+}
+
+
 //fixing mongoose and typsscript compatiability issues by using the model
-interface UserModel extends mongoose.Model<any> {
-  build(attrs: UserAttrs): any 
+// telling what methods we ahve while creating the user
+//rerurn type is  UserDoc
+interface UserModel extends mongoose.Model<UserDoc> {
+  build(attrs: UserAttrs): UserDoc
 }
 
 //instead of using the buildUser, where we had to export builduser as well
@@ -29,10 +40,10 @@ userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs)
 }
 
-const User = mongoose.model<any, UserModel>('User', userSchema)
+const User = mongoose.model<UserDoc, UserModel>('User', userSchema)
 /*
-example where it works
-User.build({
+//example where it works
+const user = User.build({
   email: "",
   password: ""
 })
