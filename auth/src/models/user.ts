@@ -17,9 +17,18 @@ const userSchema = new mongoose.Schema({
     required: true
   }
 })
-
+//instead of using the buildUser, where we had to export builduser as well
+//herebuild will be a method on User model, so we can call using user.build({})
+userSchema.statics.build = (attrs: UserAttrs) => {
+  return new User(attrs)
+}
 
 const User = mongoose.model('User', userSchema)
+
+User.build({
+  email: "",
+  password: ""
+})
 
 /*
 This is the usual way of creating a new user
@@ -38,10 +47,13 @@ it defies the whole purpose of using typescript
 
 //This is a hack, which will make sure that the right attributes 
 //name and types are passed while creating a new user
+
+/*
+Better approach in the beginning
 const buildUser = (attrs: UserAttrs) => {
   new User(attrs)
 }
-/*
+
 This is the way we are going to call the buildUser to create new User, instead of calling the new User directly
 buildUser ({
   email: "dfds",
@@ -49,4 +61,4 @@ buildUser ({
   //sfb: jdsfj will throw error
 })
 */
-export {User, buildUser}
+export {User}
