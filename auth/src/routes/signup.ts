@@ -7,6 +7,10 @@ import { body, validationResult } from "express-validator";
 //Custom error handlers
 import { RequestValidationError } from "../errors/request-validation-error";
 import { DatabaseConnectionError } from "../errors/database-connetion-error";
+import { BadRequestError } from "../errors/bad-request-error";
+
+
+import { User } from "../models/user";
 
 const router = express.Router()
 /*
@@ -36,14 +40,20 @@ router.post('/api/users/signup',  [
     throw new RequestValidationError(errors.array())
   }
 
-
+  //Check if the user with the email is already present
   const {email, password} = req.body
+  //will return null if empty or will return the details if the user is present
+  const existingUser = await User.findOne({email})
+  if(existingUser) {
+    
+    throw new BadRequestError('Email is already in use!!!')
+  }
+  //cretaing user using the usermodel
+  const user = User.build({email, password})
+  //saving the user to the DB
+  await user.save()
 
-  throw new DatabaseConnectionError()
-
-  console.log("current-user(/api/users/signup):Creating user")
-  
-  res.send({"message": "Ganavi got an internship and fulltime!!!!!"})
+  res.status(201).send(user)
 })
 
 //renaming it because we will have multiple routers
