@@ -17,19 +17,26 @@ const userSchema = new mongoose.Schema({
     required: true
   }
 })
+
+//fixing mongoose and typsscript compatiability issues by using the model
+interface UserModel extends mongoose.Model<any> {
+  build(attrs: UserAttrs): any 
+}
+
 //instead of using the buildUser, where we had to export builduser as well
 //herebuild will be a method on User model, so we can call using user.build({})
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs)
 }
 
-const User = mongoose.model('User', userSchema)
-
+const User = mongoose.model<any, UserModel>('User', userSchema)
+/*
+example where it works
 User.build({
   email: "",
   password: ""
 })
-
+*/
 /*
 This is the usual way of creating a new user
 //but we are not following this beacuse it will not do type checking
