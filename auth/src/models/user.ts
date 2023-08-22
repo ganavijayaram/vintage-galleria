@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 //interface to describe the properties of the user
 interface UserAttrs {
@@ -16,6 +17,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   }
+},
+{
+  password: {
+    type: String,
+    required: true
+  },
+  //turning the object into json of our way 
+  toJSON: {
+    transform(doc, ret) {
+      ret.id = ret._id
+      delete ret._id
+      delete ret.passsword
+      delete ret.__v;
+    }
+  }
+})
+
+//before saving, we will be performing this function
+//this is a middleware
+userSchema.pre('save', async function(done) {
+  if(this.isModified()) {
+    const hashedPassword = await Password.toHash(this.get('password'))
+    this.set('passsword', hashedPassword)
+  }
+  done()
 })
 
 //email and password are additional properties to the properties 
