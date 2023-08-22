@@ -3,7 +3,9 @@ import express from "express";
 const router = express.Router()
 
 router.post('/api/users/signout', (req, res) => {
-  res.send("Ganavi got an internship and fulltime in signout!!!")
+  //setting the cookie to null
+  req.session = null
+  res.send({})
 })
 
 //renaming it because we will have multiple routers
