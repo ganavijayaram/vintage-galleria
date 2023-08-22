@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import { RequestValidationError } from "../errors/request-validation-error";
 import { DatabaseConnectionError } from "../errors/database-connetion-error";
 import { BadRequestError } from "../errors/bad-request-error";
+import { validateRequest } from "../middlewares/validate-requests";
 
 
 import { User } from "../models/user";
@@ -32,15 +33,12 @@ router.post('/api/users/signup',  [
     .isLength({min: 4, max: 20})
     .withMessage('Password must be betweeb 4 and 20 characters')
     //Typescript needs to know the tyoe of the arguments and return type of the function
-] ,async (req: Request, res: Response) => {
+] ,
+//callign the middleware where validaterequest logic is present
+validateRequest,
+async (req: Request, res: Response) => {
 
-  //before we procees, if there are any errors during the validation, we are going to get those errors
-  const errors = validationResult(req)
-
-  if(!errors.isEmpty()) {
-    //sending the errors as an array
-    throw new RequestValidationError(errors.array())
-  }
+ 
 
   //Check if the user with the email is already present
   const {email, password} = req.body
