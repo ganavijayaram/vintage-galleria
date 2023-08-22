@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     transform(doc, ret) {
       ret.id = ret._id
       delete ret._id
-      delete ret.passsword
+      delete ret.password
       delete ret.__v;
     }
   }
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function(done) {
   if(this.isModified()) {
     const hashedPassword = await Password.toHash(this.get('password'))
-    this.set('passsword', hashedPassword)
+    this.set('password', hashedPassword)
   }
   done()
 })
