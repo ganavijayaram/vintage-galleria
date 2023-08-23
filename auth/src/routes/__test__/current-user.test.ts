@@ -1,18 +1,13 @@
+import { awaitExpression } from "@babel/types";
 import { response } from "express";
 import request from "supertest";
 import { app } from "../../app";
 
 
 it('Responds with details of the current user', async() => {
-  const signupResponse  = await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'ganavi1@gmail.com',
-      password: 'ganavi1'
-    })
-    .expect(201)
+  
 
-    const cookie = signupResponse.get('Set-Cookie')
+    const cookie = await global.signin()
 
     
     const response = await request(app)
@@ -23,7 +18,7 @@ it('Responds with details of the current user', async() => {
     .send()
     .expect(200)
 
-    console.log(response.body, cookie)
+    
 
    expect(response.body.currentUser.email).toEqual('ganavi1@gmail.com')
 

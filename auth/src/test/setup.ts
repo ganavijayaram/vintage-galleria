@@ -1,6 +1,12 @@
+import request  from 'supertest'
 import {MongoMemoryServer} from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import { app } from '../app'
+
+declare global {
+  var  signin: () => Promise<string[]>
+}
+
 
 let mongo: any
 //perform this before runnning any of the test cases
@@ -34,5 +40,19 @@ afterAll(async() => {
   await mongoose.connection.close()
 })
 
+global.signin = async() => {
+  const email = 'ganavi1@gmail.com'
+  const password = 'ganavi1'
 
+  const response = await request(app)
+    .post('/api/users/signup')
+    .send({
+      email, password
+    })
+    .expect(201)
+
+    const cookie = response.get('Set-Cookie')
+
+    return cookie
+}
 
