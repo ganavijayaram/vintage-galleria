@@ -1,3 +1,6 @@
+//This file to only configure the app, whereas index is to start the app
+
+
 import  express  from "express";
 import { json } from "body-parser";
 //if we have any async, and there is an error in that function, we need ot use next.
@@ -26,7 +29,7 @@ app.use(
     // sicne we are not encrypting our cookies
     signed: false,
     //to chek if connection is on HTTPS 
-    secure:true
+    secure: process.env.NODE_ENV !== 'test'
   })
 )
 
