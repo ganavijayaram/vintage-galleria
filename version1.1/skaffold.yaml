@@ -16,7 +16,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: ganavijayaram/ticketing-client
+    - image: ganavijayaram/client
       context: client
       docker:
         dockerfile: Dockerfile
@@ -24,3 +24,12 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
+    - image: ganavijayaram/artifacts
+      context: artifacts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+   
