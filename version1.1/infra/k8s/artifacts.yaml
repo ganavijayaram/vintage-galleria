@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artifacts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artifacts
+  template:
+    metadata:
+      labels:
+        app: artifacts
+    spec:
+      containers:
+        - name: artifacts
+          image: ganavijayaram/artifacts
+          env:
+            - name: MONGO_URI
+              value: 'mongodb://artifacts-mongo-srv:27017/artifacts'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artifacts-srv
+spec:
+  selector:
+    app: artifacts
+  ports:
+    - name: artifacts
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
