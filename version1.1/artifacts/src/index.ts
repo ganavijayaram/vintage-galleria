@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { natsWrapper } from './nats-wrapper';
 
 import { app } from './app';
 
@@ -12,15 +13,28 @@ const start = async () => {
   }
 
   try {
+    // the url is the address of the NATS SERVER
+    // in our case it is the 
+    await natsWrapper.connect('vintagegalleria', 'abcdef', 'http://nats-srv:4222')
+
+    //Grafully shutting down 
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed')
+      process.exit()
+    })
+
+    process.on('SIGINT', () => natsWrapper.client.close())
+    process.on('SIGTERM', () => natsWrapper.client.close())
+
     await mongoose.connect(process.env.MONGO_URI);
 
-    console.log('Connected to MongoDb');
+    console.log('Artifact: Connected to MongoDb');
   } catch (err) {
     console.error(err);
   }
 
   app.listen(3000, () => {
-    console.log('Listening on port 3000!!!!!!!!');
+    console.log('Artifact: Listening on port 3000!');
   });
 };
 

@@ -3,6 +3,8 @@ import express, { Request, Response } from "express";
 import { Artifact } from "../models/artifact";
 import { body } from "express-validator";
 
+
+import {Artifact}
 const router = express.Router()
 
 router.put('/api/artifacts/:id',

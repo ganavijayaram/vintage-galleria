@@ -29,7 +29,7 @@ spec:
           '2',
           '-SD',
           '-cid',
-          'vintage'
+          'vintagegalleria'
         ]
 ---
 #service is used to connect to the server which gets created

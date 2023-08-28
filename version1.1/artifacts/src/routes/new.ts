@@ -5,7 +5,8 @@ import { body } from 'express-validator'
 
 import { requireAuth, validateRequest } from '@vintagegalleria/common'
 import { Artifact } from '../models/artifact'
-
+import { ArtifactCreatedPublisher } from '../events/publishers/artifact-created-publishers'
+import { natsWrapper } from '../nats-wrapper'
 
 const router = express.Router()
 
@@ -38,7 +39,19 @@ router.post('/api/artifacts', requireAuth, [
     userId: req.currentUser!.id
   })
 
+  // saving the artifact into the database
   await artifact.save()
+
+  //After we create an artifact we are publishing artifact-created to NATS
+  // dont have to call .client() or .get()
+  await new ArtifactCreatedPublisher(natsWrapper.client).publish({
+    id: artifact.id,
+    // we could just say title = title,
+    // but what we send to database might be differnet what is saved to the datbase after validation
+    title: artifact.title, 
+    price: artifact.price,
+    userId: artifact.userId
+  })
 
 
   res.status(201).send(artifact)
