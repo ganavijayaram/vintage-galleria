@@ -1,6 +1,7 @@
 import request from 'supertest'
 import {app} from '../../app'
 import { Artifact } from '../../models/artifact'
+import { natsWrapper } from '../../nats-wrapper'
 
 it('Has a route handler to listen to /api/artifacts for post request',async () => {
   const response = await request(app)
@@ -102,4 +103,20 @@ it('Creates an artificate with valid inputs',async () => {
   expect(artifacts.length).toEqual(1)
   expect(artifacts[0].price).toEqual(price)
   expect(artifacts[0].title).toEqual(title)
+})
+
+it('publishes an event', async() => {
+  const price = 10
+  const title = 'abcd'
+
+  await request(app)
+  .post('/api/artifacts')
+  .set('Cookie', global.signin())
+  .send({
+    title: title,
+    price: price
+  })
+  .expect(201)
+
+expect(natsWrapper.client.publish).toHaveBeenCalled()
 })

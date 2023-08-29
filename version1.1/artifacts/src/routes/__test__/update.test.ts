@@ -2,6 +2,7 @@ import request from 'supertest'
 import { app } from '../../app'
 import mongoose from 'mongoose'
 import { response } from 'express'
+import { natsWrapper } from '../../nats-wrapper'
 
 it('returns 404 if given ID does not exist', async() => {
 
@@ -120,4 +121,27 @@ it('returns 200 Updates ticket when valid inputs are given', async() => {
     expect(artifactResponse.body.title).toEqual('abcd')
     expect(artifactResponse.body.price).toEqual(1002)
 
+})
+
+it('publishes an event', async() => {
+  const cookie = global.signin()
+
+  const response = await request(app)
+    .post('/api/artifacts')
+    .set('Cookie', cookie)
+    .send({
+      title: 'abcd',
+      price: 26
+    })
+    
+
+    await request(app)
+    .put(`/api/artifacts/${response.body.id}`)
+    .set('Cookie', cookie) //here were using the cookie of the user who created hte artifact
+    .send({
+      title: 'abcd',
+      price: 1002
+    })
+    .expect(200)
+expect(natsWrapper.client.publish).toHaveBeenCalled()
 })

@@ -4,7 +4,9 @@ import { Artifact } from "../models/artifact";
 import { body } from "express-validator";
 
 
-import {Artifact}
+import { ArtifactUpdatedPublisher } from "../events/publishers/artifact-updated-publisher";
+import { natsWrapper } from "../nats-wrapper";
+
 const router = express.Router()
 
 router.put('/api/artifacts/:id',
@@ -36,6 +38,14 @@ router.put('/api/artifacts/:id',
     })
 
     await artifact.save()
+
+    // After saving the artifact we will publish an event
+    new ArtifactUpdatedPublisher(natsWrapper.client).publish({
+      id: artifact.id,
+      title: artifact.title,
+      price: artifact.price,
+      userId: artifact.userId
+    })
 
     res.send(artifact)
 })
