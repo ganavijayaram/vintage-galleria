@@ -4,6 +4,7 @@ import mongoose from "mongoose"
 import  {app} from '../../app'
 import { Order, OrderStatus } from "../../models/orders"
 import { Artifact } from "../../models/artifact"
+import { natsWrapper } from "../../nats-wrapper"
 
 it('returns error id artifact does not exist', async () => {
   // generating valid mongoose id
@@ -63,4 +64,23 @@ it('reserves an artifact', async () => {
   
 })
 
-it.todo('emits an order event')
+// we are not using the real natswrapper and we are using the mock one
+it('emits an order event', async () => {
+   // creating artifact and saving in the DB
+   const artifact = Artifact.build({
+    title: 'Vase',
+    price: 200
+  })
+  await artifact.save()
+
+  
+  // actual testing
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({artifactId: artifact.id})
+    .expect(201)
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled()
+
+})
