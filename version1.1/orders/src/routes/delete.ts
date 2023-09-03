@@ -6,7 +6,7 @@ const router = express.Router()
 
 
 // NOT actually deleting it instead we are cancelling it
-router.delete('/api/orders/delete', requireAuth, async (req: Request, res: Response) => {
+router.delete('/api/orders/:orderId', requireAuth, async (req: Request, res: Response) => {
 
   
   const order = await Order.findById(req.params.orderId)
