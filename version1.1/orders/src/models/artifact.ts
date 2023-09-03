@@ -3,7 +3,13 @@
 // we migth want to abstract data from the artifact model in the artifact folder and this folder
 // but we should not be doing this, because this model here is only 
 // for the order service to work with not for the artifact service
+
 import mongoose from "mongoose";
+
+//import { OrderStatus } from "@vintagegalleria/common";
+// Instead of importing Orderstatus from our npm
+// we will import to Orders module and from there import it here
+import { Order, OrderStatus } from "./orders";
 
 // what attributes are given by the user while building
 interface ArtifactAttrs {
@@ -16,7 +22,7 @@ interface ArtifactAttrs {
 export interface ArtifactDoc extends mongoose.Document {
   title: string
   price: number
-
+  isReserved(): Promise<boolean>
 }
 
 interface ArtifactModel extends mongoose.Model<ArtifactDoc> {
@@ -45,6 +51,26 @@ const artifactSchema = new mongoose.Schema({
 
 artifactSchema.statics.build = (attrs: ArtifactAttrs) => {
   return new Artifact(attrs)
+}
+
+// not using arrow, because 'this' does not work well with arrow function
+artifactSchema.methods.isReserved = async function() {
+  const existingOrder =  await Order.findOne({
+    artifact: this,
+    status: {
+      $in: [
+        OrderStatus.Created,
+        OrderStatus.Complete,
+        OrderStatus.AwaitingPayment
+      ]
+    }
+  })
+
+  if(existingOrder) {
+    return true
+  }
+  return false
+
 }
 
 const Artifact =  mongoose.model<ArtifactDoc, ArtifactModel>('Artifact', artifactSchema)

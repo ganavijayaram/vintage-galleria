@@ -1,6 +1,9 @@
 import mongoose from 'mongoose'
 import {OrderStatus} from '@vintagegalleria/common'
 import { ArtifactDoc } from './artifact'
+
+export {OrderStatus}
+
 // properties which are needed to create an order
 interface orderAttrs {
   userId: string // this is TS 
