@@ -6,6 +6,9 @@ import mongoose from 'mongoose'
 
 import { Artifact } from '../models/artifact'
 import { Order } from '../models/orders'
+import { OrderCreatedEvent } from '@vintagegalleria/common'
+import { natsWrapper } from '../nats-wrapper'
+import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher'
 
 const router = express.Router()
 
@@ -67,6 +70,18 @@ router.post('/api/orders/',
   await order.save()
 
   // publish event that order is created
+  new OrderCreatedPublisher(natsWrapper.client).publish({
+    id: order.id,
+    status: order.status,
+    userId: order.userId,
+    // if we give date or covert date to strin, it will be in current timezone, we dont want that
+    // we need the date to be in UTC
+    expiresAt: order.expiresAt.toISOString(),
+    artifact: {
+      id: artifact.id,
+      price: artifact.price
+    }
+  })
   res.status(201).send(order)
 })
 

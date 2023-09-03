@@ -2,6 +2,9 @@ import { NotAuthorizedError, NotFoundError, OrderStatus, requireAuth } from '@vi
 import express, {Request, Response} from 'express'
 import { Order } from '../models/orders'
 
+import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher'
+import { natsWrapper } from '../nats-wrapper'
+
 const router = express.Router()
 
 
@@ -9,7 +12,7 @@ const router = express.Router()
 router.delete('/api/orders/:orderId', requireAuth, async (req: Request, res: Response) => {
 
   
-  const order = await Order.findById(req.params.orderId)
+  const order = await Order.findById(req.params.orderId).populate('artifact')
 
   if(!order) {
     throw new NotFoundError()
@@ -23,6 +26,14 @@ router.delete('/api/orders/:orderId', requireAuth, async (req: Request, res: Res
   order.status = OrderStatus.Cancelled
   await order.save()
 
+
+  // Publishing an event to say the order was cancelled
+  new OrderCancelledPublisher(natsWrapper.client).publish({
+    id: order.id,
+    artifact: {
+      id: order.artifact.id
+    }
+  })
   res.status(204).send(order)
 
  
