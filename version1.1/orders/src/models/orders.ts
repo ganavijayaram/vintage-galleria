@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
+import {OrderStatus} from '@vintagegalleria/common'
 
 // properties which are needed to create an order
 interface orderAttrs {
   userId: string // this is TS 
-  status: string
+  status: OrderStatus
   expiresAt: Date
   artifact: ArtifactDoc
 }
@@ -12,7 +13,7 @@ interface orderAttrs {
 // sometimes we will have mongoose put additional properties apart fro the one what we use for creating an order
 interface orderDoc extends mongoose.Document{
     userId: string
-    status: string
+    status: OrderStatus
     expiresAt: Date
     artifact: ArtifactDoc
 }
@@ -31,7 +32,10 @@ const orderSchema =  new mongoose.Schema({
   },
   status: {
     type: String,
-    required: true
+    required: true,
+    // double checking that values for status has to be from the OrderStatus
+    enum: Object.values(OrderStatus),
+    default: OrderStatus.Created
   },
   expiresAt: {
     type: mongoose.Schema.Types.Date
