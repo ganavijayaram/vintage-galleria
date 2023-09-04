@@ -13,10 +13,7 @@ export class ArtifactUpdatedListner extends Listener<ArtifactUpdatedEvent> {
 
       // After inclduing the version field, we wil update only 
       // those records whose version number is 1 less than the current version
-      const artifact = await Artifact.findOne({
-        _id: data.id,
-        version: data.version - 1
-      })
+      const artifact = await Artifact.findbyEvent(data)
 
       // after adidng version and we do not find the artiafct above, 
       // it now means we are processing the event out of order

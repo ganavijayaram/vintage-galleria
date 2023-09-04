@@ -30,6 +30,9 @@ export interface ArtifactDoc extends mongoose.Document {
 
 interface ArtifactModel extends mongoose.Model<ArtifactDoc> {
   build(attrs: ArtifactAttrs): ArtifactDoc
+  // since we have nasty code in the artifact-updated-listener
+  // for finding the record in onMessage()
+  findbyEvent(event: {id: string, version: number}): Promise <ArtifactDoc | null>
 }
 
 const artifactSchema = new mongoose.Schema({
@@ -63,6 +66,13 @@ artifactSchema.statics.build = (attrs: ArtifactAttrs) => {
     _id: attrs.id,
     title: attrs.title,
     price: attrs.price
+  })
+}
+
+artifactSchema.statics.findbyEvent = (event: {id: string, version: number}) => {
+  return Artifact.findOne({
+    _id: event.id,
+    version: event.version - 1
   })
 }
 
