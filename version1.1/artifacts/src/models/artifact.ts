@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 //Attributes is what is neeed to build a new artifact
 interface ArtifactAttrs {
@@ -14,6 +15,10 @@ interface ArtifactDoc extends mongoose.Document{
   title: string  //This is TS datatype
   price: number
   userId: string
+  // Doc contains extra arguments like __v, __id those which are not defined in the attributes
+  // since we are telling that we are using version instead of __v for the version optimistic concurrency 
+  // we need to add version here
+  version: number
 }
 
 interface ArtifactModel extends mongoose.Model<ArtifactDoc>{
@@ -48,6 +53,10 @@ const artifactSchema = new mongoose.Schema({
     }
   }
 })
+
+// Using the version field instead default __v for versioning for optimistic concurrency control
+artifactSchema.set('versionKey', 'version')
+artifactSchema.plugin(updateIfCurrentPlugin)
 
 artifactSchema.statics.build = (attrs: ArtifactAttrs) => {
   return new Artifact(attrs)
