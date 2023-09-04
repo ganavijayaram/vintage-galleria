@@ -5,6 +5,7 @@
 // for the order service to work with not for the artifact service
 
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 //import { OrderStatus } from "@vintagegalleria/common";
 // Instead of importing Orderstatus from our npm
@@ -23,6 +24,7 @@ interface ArtifactAttrs {
 export interface ArtifactDoc extends mongoose.Document {
   title: string
   price: number
+  version: number
   isReserved(): Promise<boolean>
 }
 
@@ -49,6 +51,10 @@ const artifactSchema = new mongoose.Schema({
     }
   }
 })
+
+// to include version in the records just like the artifact service 
+artifactSchema.set('versionKey', 'version')
+artifactSchema.plugin(updateIfCurrentPlugin)
 
 artifactSchema.statics.build = (attrs: ArtifactAttrs) => {
   //return new Artifact(attrs)
