@@ -42,6 +42,7 @@ router.put('/api/artifacts/:id',
     // After saving the artifact we will publish an event
     new ArtifactUpdatedPublisher(natsWrapper.client).publish({
       id: artifact.id,
+      version: artifact.version,
       title: artifact.title,
       price: artifact.price,
       userId: artifact.userId

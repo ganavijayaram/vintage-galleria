@@ -46,6 +46,7 @@ router.post('/api/artifacts', requireAuth, [
   // dont have to call .client() or .get()
   await new ArtifactCreatedPublisher(natsWrapper.client).publish({
     id: artifact.id,
+    version: artifact.version,
     // we could just say title = title,
     // but what we send to database might be differnet what is saved to the datbase after validation
     title: artifact.title, 
