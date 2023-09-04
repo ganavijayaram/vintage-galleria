@@ -1,12 +1,11 @@
 // this is for people who are trying to purchase the artifact
-import { BadRequestError, NotFoundError, OrderStatus, requireAuth, validateRequest } from '@vintagegalleria/common'
+import { BadRequestError, NotFoundError, requireAuth, validateRequest, OrderStatus} from '@vintagegalleria/common'
 import express, {Request, Response} from 'express'
 import { body } from 'express-validator'
 import mongoose from 'mongoose'
 
 import { Artifact } from '../models/artifact'
 import { Order } from '../models/orders'
-import { OrderCreatedEvent } from '@vintagegalleria/common'
 import { natsWrapper } from '../nats-wrapper'
 import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher'
 
@@ -82,6 +81,7 @@ router.post('/api/orders/',
       price: artifact.price
     }
   })
+
   res.status(201).send(order)
 })
 

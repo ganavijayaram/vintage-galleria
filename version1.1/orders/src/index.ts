@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 import { natsWrapper } from './nats-wrapper';
 
+
 import { app } from './app';
+
+//Listeners
+import { ArtifactCreatedListener } from './events/listeners/artifact-created-listener';
+import { ArtifactUpdatedListner } from './events/listeners/artifact-updated-listener';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -34,6 +39,9 @@ const start = async () => {
 
     process.on('SIGINT', () => natsWrapper.client.close())
     process.on('SIGTERM', () => natsWrapper.client.close())
+
+    new ArtifactCreatedListener(natsWrapper.client).listen()
+    new ArtifactUpdatedListner(natsWrapper.client).listen()
 
     await mongoose.connect(process.env.MONGO_URI);
 

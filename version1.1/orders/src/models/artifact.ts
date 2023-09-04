@@ -13,6 +13,7 @@ import { Order, OrderStatus } from "./orders";
 
 // what attributes are given by the user while building
 interface ArtifactAttrs {
+  id: string
   title: string
   price: number
 
@@ -50,7 +51,13 @@ const artifactSchema = new mongoose.Schema({
 })
 
 artifactSchema.statics.build = (attrs: ArtifactAttrs) => {
-  return new Artifact(attrs)
+  //return new Artifact(attrs)
+  // reassigning the variables to overcome the difference in ID problem
+  return new Artifact({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price
+  })
 }
 
 // not using arrow, because 'this' does not work well with arrow function
