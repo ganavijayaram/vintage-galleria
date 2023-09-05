@@ -71,6 +71,7 @@ router.post('/api/orders/',
   // publish event that order is created
   new OrderCreatedPublisher(natsWrapper.client).publish({
     id: order.id,
+    version: order.version,
     status: order.status,
     userId: order.userId,
     // if we give date or covert date to strin, it will be in current timezone, we dont want that
