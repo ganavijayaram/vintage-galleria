@@ -3,10 +3,12 @@ import request from 'supertest'
 import { app } from '../../app'
 import { Order } from '../../models/orders'
 import { Artifact } from '../../models/artifact'
+import mongoose from 'mongoose'
 
 
 const buildAtrifact = async () => {
   const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })

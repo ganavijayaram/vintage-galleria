@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import request from 'supertest'
 
 import { app } from '../../app'
@@ -10,6 +11,7 @@ it('marks order as cancelled', async() => {
 
   // create artifact
   const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })
@@ -42,6 +44,7 @@ it('marks order as cancelled', async() => {
 it('Emits a order cancelled event', async () => {
   // create artifact
   const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })

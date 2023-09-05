@@ -21,6 +21,7 @@ it('returns error if the artifact is reserved', async () => {
 
   // creating artifact and saving in the DB
   const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })
@@ -48,6 +49,7 @@ it('returns error if the artifact is reserved', async () => {
 it('reserves an artifact', async () => {
   // creating artifact and saving in the DB
   const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })
@@ -68,6 +70,7 @@ it('reserves an artifact', async () => {
 it('emits an order event', async () => {
    // creating artifact and saving in the DB
    const artifact = Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })

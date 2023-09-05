@@ -1,4 +1,5 @@
 import { OrderStatus } from '@vintagegalleria/common'
+import mongoose from 'mongoose'
 import request from 'supertest'
 
 import { app } from '../../app' 
@@ -8,6 +9,7 @@ import { Order } from '../../models/orders'
 it('fetches the order', async () => {
   // create artifact
   const artifactOne = await Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })
@@ -37,6 +39,7 @@ expect(fetchorder.id).toEqual(order.id)
 it('returns error if accesising someone elses order', async () => {
   // create artifact
   const artifactOne = await Artifact.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: 'Vase',
     price: 200
   })
