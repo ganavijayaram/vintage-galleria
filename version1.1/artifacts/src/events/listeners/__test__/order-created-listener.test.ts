@@ -25,8 +25,8 @@ const setup = async () => {
     userId: new mongoose.Types.ObjectId().toHexString(),
     expiresAt: 'abcd',
     artifact: {
-        id: artifact.id,
-        price: artifact.price
+      id: artifact.id,
+      price: artifact.price
     }
   }
 
@@ -37,23 +37,36 @@ const setup = async () => {
   }
 
   //return
-  return {msg, data, artifact, listener}
+  return { msg, data, artifact, listener }
 }
 
 it('Sets the userId of the artifact', async () => {
-const {msg, data, artifact, listener} = await setup()
+  const { msg, data, artifact, listener } = await setup()
 
-await listener.onMessage(data, msg)
+  await listener.onMessage(data, msg)
 
-const updatedArtifact = await Artifact.findById(artifact.id)
+  const updatedArtifact = await Artifact.findById(artifact.id)
 
-expect(updatedArtifact!.orderId).toEqual(data.id)
+  expect(updatedArtifact!.orderId).toEqual(data.id)
 })
 
 it('acks the message', async () => {
-  const {msg, data, artifact, listener} = await setup()
+  const { msg, data, artifact, listener } = await setup()
 
   await listener.onMessage(data, msg)
   expect(msg.ack).toHaveBeenCalled()
+
+})
+
+it('publishes an artifact updated event', async () => {
+  const { msg, data, artifact, listener } = await setup()
+
+  await listener.onMessage(data, msg)
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled()
+
+ const artifactUpdatedData = JSON.parse((natsWrapper.client.publish as jest.Mock).mock.calls[2][1])
+
+ expect(data.id).toEqual(artifactUpdatedData.orderId)
   
 })
