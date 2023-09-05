@@ -3,6 +3,7 @@ import { app } from '../../app'
 import mongoose from 'mongoose'
 import { response } from 'express'
 import { natsWrapper } from '../../nats-wrapper'
+import { Artifact } from '../../models/artifact'
 
 it('returns 404 if given ID does not exist', async() => {
 
@@ -144,4 +145,31 @@ it('publishes an event', async() => {
     })
     .expect(200)
 expect(natsWrapper.client.publish).toHaveBeenCalled()
+})
+
+it('rejects updates if the artifact is already reserved', async () => {
+
+  const cookie = global.signin()
+
+  const response = await request(app)
+    .post('/api/artifacts')
+    .set('Cookie', cookie)
+    .send({
+      title: 'abcd',
+      price: 26
+    })
+
+    const artifact = await Artifact.findById(response.body.id)
+    artifact!.set({orderId: new mongoose.Types.ObjectId().toHexString()})
+    await artifact!.save()
+
+    await request(app)
+    .put(`/api/artifacts/${response.body.id}`)
+    .set('Cookie', cookie) //here were using the cookie of the user who created hte artifact
+    .send({
+      title: 'abcd',
+      price: 1002
+    })
+    .expect(400)
+
 })

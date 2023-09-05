@@ -1,4 +1,4 @@
-import { NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from "@vintagegalleria/common";
+import { BadRequestError, NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from "@vintagegalleria/common";
 import express, { Request, Response } from "express";
 import { Artifact } from "../models/artifact";
 import { body } from "express-validator";
@@ -26,6 +26,11 @@ router.put('/api/artifacts/:id',
     const artifact = await Artifact.findById(req.params.id)
     if(!artifact) {
       throw new NotFoundError()
+    }
+
+    // Checking the of the artifact is already reserved
+    if(artifact.orderId) {
+      throw new BadRequestError('Artifact is already reserved')
     }
 
     if(artifact.userId !== req.currentUser!.id) {
