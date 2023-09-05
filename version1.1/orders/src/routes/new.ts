@@ -13,7 +13,7 @@ const router = express.Router()
 
 // we could set as environment variable in kubernetes, so everytime we make changes in this file,
 //  we dont have to deploy it
-const EXPIRATION_WINDOW_SECONDS = 15
+const EXPIRATION_WINDOW_SECONDS = 1 * 60
 
 router.post('/api/orders/',
  requireAuth,
