@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: ganavijayaram/expiration
+          env:
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: 'vintagegalleria'
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name #using pods name for clientID
+            - name: REDIS_HOST
+              value: expiration-redis-srv
+            
+# We dont need to connect to this service from any other service directly
+# hence we dont need the service
+# this pod will be running the expiration, and it will be communcating with
+# other services asynchronously using the NATS streaming server
