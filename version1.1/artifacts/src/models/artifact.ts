@@ -19,6 +19,8 @@ interface ArtifactDoc extends mongoose.Document{
   // since we are telling that we are using version instead of __v for the version optimistic concurrency 
   // we need to add version here
   version: number
+  // ? means optional, when we create an artifact, orderId is not necessary
+  orderId?: string
 }
 
 interface ArtifactModel extends mongoose.Model<ArtifactDoc>{
@@ -43,6 +45,9 @@ const artifactSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true
+  },
+  orderId: {
+    type: String
   }
 }, {
   toJSON: {
