@@ -7,6 +7,7 @@ import { app } from './app';
 //Listeners
 import { ArtifactCreatedListener } from './events/listeners/artifact-created-listener';
 import { ArtifactUpdatedListner } from './events/listeners/artifact-updated-listener';
+import { ExpirationCompleteListener } from './events/listeners/expiration-complete-listener';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -42,6 +43,7 @@ const start = async () => {
 
     new ArtifactCreatedListener(natsWrapper.client).listen()
     new ArtifactUpdatedListner(natsWrapper.client).listen()
+    new ExpirationCompleteListener(natsWrapper.client).listen()
 
     await mongoose.connect(process.env.MONGO_URI);
 
