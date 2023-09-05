@@ -5,7 +5,7 @@ class NatsWrapper {
   //al propertiies of teh class are usually initialised in the constructor
   // ? means we will leave it uninitialised for a while
   private _client? : Stan
-c
+
   get client() {
     // this is set only if connect is called before
     if(!this._client) {
