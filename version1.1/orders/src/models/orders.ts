@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import {OrderStatus} from '@vintagegalleria/common'
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current'
 import { ArtifactDoc } from './artifact'
 
 export {OrderStatus}
@@ -19,6 +20,7 @@ interface orderDoc extends mongoose.Document{
     status: OrderStatus
     expiresAt: Date
     artifact: ArtifactDoc
+    version: number
 }
 
 interface orderModel extends mongoose.Model<orderDoc> {
@@ -55,6 +57,9 @@ const orderSchema =  new mongoose.Schema({
     }
   }
 })
+
+orderSchema.set('versionKey', 'version')
+orderSchema.plugin(updateIfCurrentPlugin)
 
 orderSchema.statics.build = (attrs: orderAttrs) => {
   return new Order(attrs)
