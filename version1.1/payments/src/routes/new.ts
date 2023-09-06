@@ -42,6 +42,8 @@ async (req: Request, res: Response) => {
     throw new NotAuthorizedError()
   }
 
+  console.log('NEW ', order)
+
   // checki if order is not cancelled
   if(order.status === OrderStatus.Cancelled) {
     throw new BadRequestError('Order Expired')
@@ -55,7 +57,7 @@ async (req: Request, res: Response) => {
     source: token
   })
 
-  res.send({success: true})
+  res.status(201).send({success: true})
 })
 
 export {router as createChargeRouter}
