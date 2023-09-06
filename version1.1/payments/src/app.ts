@@ -4,6 +4,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@vintagegalleria/common'
 
+//importing the middlewares/routers from our routes folder
 
 
 const app = express();
