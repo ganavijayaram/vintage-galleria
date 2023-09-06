@@ -15,6 +15,10 @@ declare global {
 //when something is importing this file, it will use the mocks
 jest.mock('../nats-wrapper')
 
+process.env.STRIPE_KEY = 'sk_test_51NnPo9FSBDqb54pe7UKjODsCMVZozOLg0WfBPfoDai7IcQfh7BpysHK2qnkE1ovlZkOYyFBTNwCjtdw0aK85mrTz00s7ercgTi'
+
+
+
 let mongo: any;
 beforeAll(async () => {
   jest.clearAllMocks()
