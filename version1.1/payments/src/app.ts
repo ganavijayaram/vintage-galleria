@@ -3,6 +3,7 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@vintagegalleria/common'
+import { createChargeRouter } from './routes/new';
 
 //importing the middlewares/routers from our routes folder
 
@@ -24,7 +25,7 @@ app.use(
 
 //before creating an artificat, we need to check if the user is authenticated
 app.use(currentUser)
-
+app.use(createChargeRouter)
 
 
 app.all('*', async (req, res) => {

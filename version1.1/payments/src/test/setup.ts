@@ -9,7 +9,7 @@ import { app } from '../app';
 
 
 declare global {
-  var signin: () => string[];
+  var signin: (id?: string) => string[];
 }
 
 //when something is importing this file, it will use the mocks
@@ -42,14 +42,13 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = () => {
+global.signin = (id?: string) => {
   //here we are trying to create our own session to fake authentication
 
- 
-const id = new mongoose.Types.ObjectId().toHexString()
+
   // Step 1: Building our JWT payload {id, email}
   const payload = {
-    id: id,
+    id: id || new mongoose.Types.ObjectId().toHexString(),
     email: 'ganavi@gmail.com'
   }
 
