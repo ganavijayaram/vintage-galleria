@@ -13,6 +13,8 @@ import {
 import { Order } from '../models/order'
 import { stripe } from '../stripe'
 import { Payment } from '../models/payments'
+import { natsWrapper } from '../nats-wrapper'
+import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher'
 
 
 const router = express.Router()
@@ -68,7 +70,14 @@ async (req: Request, res: Response) => {
 
   await payment.save()
 
-  res.status(201).send({success: true})
+  // publishing payment created event
+   new PaymentCreatedPublisher(natsWrapper.client).publish({
+    id: payment.id,
+    orderId: payment.orderId,
+    stripeId: payment.stripeId
+  })
+
+  res.status(201).send({id: payment.id})
 })
 
 export {router as createChargeRouter}
