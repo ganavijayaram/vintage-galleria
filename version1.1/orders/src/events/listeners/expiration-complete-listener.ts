@@ -23,6 +23,10 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
         // artifact: null 
       })
 
+      if(order.status === OrderStatus.Complete) {
+        return msg.ack()
+      }
+
       await order.save()
 
       //console.log('DATTTAAA ', order.artifact.id, data.orderId, order)
