@@ -10,7 +10,10 @@ import { queueGroupName } from "./queue-group-name";
    queueGroupName = queueGroupName;
    async onMessage(data: OrderCancelledEvent['data'], msg: Message) {
 
+    //console.log('DATAAAA ', data)
+
     const artifact = await Artifact.findById(data.artifact.id)
+    //console.log('DATAAAA data and artifact', data, artifact)
 
     if(!artifact) {
       throw new Error('Artifact Not found')

@@ -20,6 +20,7 @@ const expirationQueue = new Queue<Payload>('order:expiration', {
 // here we are going to publish an expiration complete event 
 expirationQueue.process(async(job) => {
     console.log('publishing the expiration complete event  for orderId: ', job.data.orderId)
+    //console.log('EXPIRATIONA complete ', job)
     await new ExpirationCompletePublisher(natsWrapper.client).publish({
         orderId: job.data.orderId
     })

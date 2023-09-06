@@ -68,6 +68,8 @@ router.post('/api/orders/',
 
   await order.save()
 
+  //console.log('NEWWW ', order)
+
   // publish event that order is created
   new OrderCreatedPublisher(natsWrapper.client).publish({
     id: order.id,

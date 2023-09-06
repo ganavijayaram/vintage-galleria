@@ -12,6 +12,9 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     //console.log("DELAYYYY ", delay)
     // When we receive an order-created event from the order service
     // we will queue the job int the redis server
+
+    //console.log('EXPIRATIONA message ', data)
+
     await expirationQueue.add({
       orderId: data.id
     }, {

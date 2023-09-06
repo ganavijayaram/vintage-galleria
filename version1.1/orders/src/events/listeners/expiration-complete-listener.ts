@@ -9,7 +9,7 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
   queueGroupName = queueGroupName;
   async onMessage(data: ExpirationCompleteEvent['data'], msg: Message) {
       // Get the order
-      const order = await Order.findById(data.orderId)
+      const order = await Order.findById(data.orderId).populate('artifact')
 
       if(!order) {
         throw new Error('Order not Found')
@@ -25,6 +25,7 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
 
       await order.save()
 
+      //console.log('DATTTAAA ', order.artifact.id, data.orderId, order)
 
       // Once we cancel we need to publish it 
       await new OrderCancelledPublisher(this.client).publish({
